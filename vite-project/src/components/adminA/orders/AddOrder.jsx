@@ -1,0 +1,250 @@
+import React, { useState } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
+import axiosClient from '../../../AxiosClient'
+import swal from 'sweetalert'
+
+const AddOrder = () => {
+
+    const navigate = useNavigate()
+    const [errors, setErrors] = useState([])
+    const [ordersInput, setOrder] = useState({
+        meal_name: '',
+        meal_size: '',
+        meal_quatity: '',
+        meal_price: '',
+        meal_name_order: '',
+        meal_phone: '',
+        meal_adresse: '',
+        meal_drink: '',
+        meal_status: '',
+    })
+
+    const handleInput = (e) => {
+        e.persist()
+
+        setOrder({ ...ordersInput, [e.target.name]: e.target.value })
+    }
+
+    const orderSubmit = (e) => {
+
+        e.preventDefault()
+
+        if (ordersInput.meal_name === 'Pizza 1' || ordersInput.meal_name === 'Pizza 2' || ordersInput.meal_name === 'Pizza 3') {
+
+            if (ordersInput.meal_size === 'Small') {
+                if (ordersInput.meal_drink === 'None') {
+                    ordersInput.meal_price = 40 * ordersInput.meal_quatity;
+                }
+                else {
+                    ordersInput.meal_price = (40 * ordersInput.meal_quatity) + 5;
+                }
+            }
+            else if (ordersInput.meal_size === 'Medium') {
+                if (ordersInput.meal_drink === 'None') {
+                    ordersInput.meal_price = 80 * ordersInput.meal_quatity;
+                }
+                else {
+                    ordersInput.meal_price = (80 * ordersInput.meal_quatity) + 5;
+                }
+            }
+            else if (ordersInput.meal_size === 'Large') {
+                if (ordersInput.meal_drink === 'None') {
+                    ordersInput.meal_price = 100 * ordersInput.meal_quatity;
+                }
+                else {
+                    ordersInput.meal_price = (100 * ordersInput.meal_quatity) + 5;
+                }
+            }
+        }
+        if (ordersInput.meal_name === 'Shawarma 1' || ordersInput.meal_name === 'Shawarma 2' || ordersInput.meal_name === 'Shawarma 3') {
+
+            if (ordersInput.meal_size === 'Small') {
+                if (ordersInput.meal_drink === 'None') {
+                    ordersInput.meal_price = 15 * ordersInput.meal_quatity;
+                }
+                else {
+                    ordersInput.meal_price = (15 * ordersInput.meal_quatity) + 5;
+                }
+            }
+            else if (ordersInput.meal_size === 'Medium') {
+                if (ordersInput.meal_drink === 'None') {
+                    ordersInput.meal_price = 40 * ordersInput.meal_quatity;
+                }
+                else {
+                    ordersInput.meal_price = (40 * ordersInput.meal_quatity) + 5;
+                }
+            }
+            else if (ordersInput.meal_size === 'Large') {
+                if (ordersInput.meal_drink === 'None') {
+                    ordersInput.meal_price = 60 * ordersInput.meal_quatity;
+                }
+                else {
+                    ordersInput.meal_price = (60 * ordersInput.meal_quatity) + 5;
+                }
+            }
+        }
+        if (ordersInput.meal_name === 'Tacos Poullet' || ordersInput.meal_name === 'Tacos Kefta' || ordersInput.meal_name === 'Tacos Ton') {
+
+            if (ordersInput.meal_size === 'Small') {
+                if (ordersInput.meal_drink === 'None') {
+                    ordersInput.meal_price = 40 * ordersInput.meal_quatity;
+                }
+                else {
+                    ordersInput.meal_price = (40 * ordersInput.meal_quatity) + 5;
+                }
+            }
+            else if (ordersInput.meal_size === 'Medium') {
+                if (ordersInput.meal_drink === 'None') {
+                    ordersInput.meal_price = 80 * ordersInput.meal_quatity;
+                }
+                else {
+                    ordersInput.meal_price = (80 * ordersInput.meal_quatity) + 5;
+                }
+            }
+            else if (ordersInput.meal_size === 'Large') {
+                if (ordersInput.meal_drink === 'None') {
+                    ordersInput.meal_price = 100 * ordersInput.meal_quatity;
+                }
+                else {
+                    ordersInput.meal_price = (100 * ordersInput.meal_quatity) + 5;
+                }
+            }
+
+        }
+        const datas = ordersInput
+
+        axiosClient.post('/order-store/', datas).then(res => {
+
+            if (res.data.status === 200) {
+                swal({
+                    title: "Success",
+                    text: res.data.message,
+                    icon: "success",
+                    button: "Ok",
+                })
+                navigate('/orders')
+            }
+            else if (res.data.status === 500) {
+                setErrors(res.data.errors_message)
+            }
+
+        })
+    }
+
+    return (
+        <div className='container' style={{ display: 'flex', justifyContent: 'center' }}>
+            <div className='card col-lg-9 mt-5' >
+                <div className='card-header text-center'>
+                    <h4 className='display-7'>Add Order</h4>
+                </div>
+                <div className='card-body'>
+                    <form onSubmit={orderSubmit}>
+                        <div className='row g-2'>
+                            <div className='col-lg-6 text-left'>
+                                <div className='form-group'>
+                                    <label>Meal Name : </label>
+                                    <select name='meal_name' onChange={handleInput} value={ordersInput.meal_name} className='form-control'>
+                                        <option >--- Select Your Meal ---</option>
+                                        <option>Pizza 1</option>
+                                        <option>Pizza 2</option>
+                                        <option>Pizza 3</option>
+                                        <option>Shawarma 1</option>
+                                        <option>Shawarma 2</option>
+                                        <option>Shawarma 3</option>
+                                        <option>Tacos Poullet</option>
+                                        <option>Tacos Kefta</option>
+                                        <option>Tacos Ton</option>
+                                    </select>
+                                    <span style={{ color: 'red' }}>{errors.meal_name}</span>
+                                </div>
+                            </div>
+                            <div className='col-lg-6'>
+                                <div className='form-group'>
+                                    <label>Name Buyer : </label>
+                                    <input type='text' name='meal_name_order' onChange={handleInput} value={ordersInput.meal_name_order} className='form-control' />
+                                    <span style={{ color: 'red' }}>{errors.meal_name_order}</span>
+                                </div>
+                            </div>
+                            <div className='col-lg-6'>
+                                <div className='form-group'>
+                                    <label>Order Adress : </label>
+                                    <input type='text' name='meal_adresse' onChange={handleInput} value={ordersInput.meal_adresse} className='form-control' />
+                                    <span style={{ color: 'red' }}>{errors.meal_adresse}</span>
+                                </div>
+                            </div>
+                            <div className='col-lg-6'>
+                                <div className='form-group'>
+                                    <label>Order Phone : </label>
+                                    <input type='text' name='meal_phone' onChange={handleInput} value={ordersInput.meal_phone} className='form-control' />
+                                    <span style={{ color: 'red' }}>{errors.meal_phone}</span>
+                                </div>
+                            </div>
+                            <div className='col-lg-6'>
+                                <div className='form-group'>
+                                    <label >Quantity :</label>
+                                    <input type='number' name='meal_quatity' onChange={handleInput} value={ordersInput.meal_quatity} className='form-control' />
+                                    <span style={{ color: 'red' }}>{errors.meal_quatity}</span>
+                                </div>
+                            </div>
+                            <div className='col-lg-6'>
+                                <div className='form-group'>
+                                    <label >Meal Size :</label>
+                                    <select name='meal_size' onChange={handleInput} value={ordersInput.meal_size} className='form-control'>
+                                        <option >--- Select Table Number ---</option>
+                                        <option>Small</option>
+                                        <option>Medium</option>
+                                        <option>Large</option>
+                                    </select>
+                                    <span style={{ color: 'red' }}>{errors.meal_size}</span>
+                                </div>
+                            </div>
+                            {/*  <div className='col-lg-6'>
+                                <div className='form-group'>
+                                    <label >Meal Price :</label>
+                                    <input type='text' name='meal_price' onChange={handleInput} value={ordersInput.meal_price} className='form-control' />
+                                    <span style={{ color: 'red' }}>{errors.meal_price}</span>
+                                </div>
+                            </div> */}
+                            <div className='col-lg-6'>
+                                <div className='form-group'>
+                                    <label >Meal Drink :</label>
+                                    <select name='meal_drink' onChange={handleInput} value={ordersInput.meal_drink} className='form-control'>
+                                        <option >--- Select Your Drink ---</option>
+                                        <option>Pepsi</option>
+                                        <option>Cola</option>
+                                        <option>Fanta</option>
+                                        <option>None</option>
+                                    </select>
+                                    <span style={{ color: 'red' }}>{errors.meal_drink}</span>
+                                </div>
+                            </div>
+                            <div className='col-lg-6'>
+                                <div className='form-group'>
+                                    <label >Status Of Meal :</label>
+                                    <select name='meal_status' onChange={handleInput} value={ordersInput.meal_status} className='form-control'>
+                                        <option >--- Select status ---</option>
+                                        <option>On</option>
+                                        <option>Off</option>
+                                    </select>
+                                    <span style={{ color: 'red' }}>{errors.meal_status}</span>
+                                </div>
+                            </div>
+                            <div className='col-lg-12'>
+                                <div className='form-group'>
+                                    <div className='d-flex float-end'>
+                                        <Link className='btn btn-danger float-end' to='/orders' >Cancel</Link>&nbsp;&nbsp;&nbsp;
+                                        <button className='btn btn-success float-end' >Create</button>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    )
+}
+
+export default AddOrder
